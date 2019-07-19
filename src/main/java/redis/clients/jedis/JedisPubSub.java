@@ -23,8 +23,14 @@ public abstract class JedisPubSub {
 
   public void onMessage(String channel, String message) {
   }
+  
+  public void onMessage(String channel, byte[] message) {
+  }
 
   public void onPMessage(String pattern, String channel, String message) {
+  }
+  
+  public void onPMessage(String pattern, String channel, byte[] message) {
   }
 
   public void onSubscribe(String channel, int subscribedChannels) {
@@ -142,6 +148,7 @@ public abstract class JedisPubSub {
         final String strchannel = (bchannel == null) ? null : SafeEncoder.encode(bchannel);
         final String strmesg = (bmesg == null) ? null : SafeEncoder.encode(bmesg);
         onMessage(strchannel, strmesg);
+        onMessage(strchannel, bmesg);
       } else if (Arrays.equals(PMESSAGE.raw, resp)) {
         final byte[] bpattern = (byte[]) reply.get(1);
         final byte[] bchannel = (byte[]) reply.get(2);
@@ -150,6 +157,7 @@ public abstract class JedisPubSub {
         final String strchannel = (bchannel == null) ? null : SafeEncoder.encode(bchannel);
         final String strmesg = (bmesg == null) ? null : SafeEncoder.encode(bmesg);
         onPMessage(strpattern, strchannel, strmesg);
+        onPMessage(strpattern, strchannel, bmesg);
       } else if (Arrays.equals(PSUBSCRIBE.raw, resp)) {
         subscribedChannels = ((Long) reply.get(2)).intValue();
         final byte[] bpattern = (byte[]) reply.get(1);
